@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace StopWatch
 {
@@ -8,6 +9,7 @@ namespace StopWatch
     TimeSpan timeSpan;
     DateTime startTime;
     bool isRunning;
+    Thread? tickThread;
 
     public StopWatch()
     {
@@ -27,7 +29,8 @@ namespace StopWatch
         startTime = DateTime.Now - timeSpan;
         isRunning = true;
         OnStart?.Invoke("Stopwatch started");
-        Tick();
+        tickThread = new Thread(Tick);
+        tickThread.Start();
       }
     }
     public void Stop()
@@ -35,6 +38,7 @@ namespace StopWatch
       if (isRunning)
       {
         isRunning = false;
+        tickThread?.Join();
         timeSpan = DateTime.Now - startTime;
         OnStop?.Invoke($"Stopwatch stopped. Total time:  {timeSpan:hh\\:mm\\:ss}");
       }
@@ -42,6 +46,7 @@ namespace StopWatch
     public void Reset()
     {
       isRunning = false;
+      tickThread?.Join();
       timeSpan = TimeSpan.Zero;
       OnReset?.Invoke("Stopwatch reset");
     }
