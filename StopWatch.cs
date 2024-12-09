@@ -24,7 +24,13 @@ namespace StopWatch {
         OnStart?.Invoke("Stopwatch started");
       }
     }
-    public void Stop() {}
+    public void Stop() {
+      if(isRunning) {
+        isRunning = false;
+        timeSpan = DateTime.Now - startTime;
+        OnStop?.Invoke($"Stopwatch stopped. Total time:  {timeSpan:hh\\:mm\\:ss}");
+      }
+    }
     public void Reset() {}
     private void Tick() {}
   }
