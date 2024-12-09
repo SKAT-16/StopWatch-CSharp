@@ -27,6 +27,7 @@ namespace StopWatch
         startTime = DateTime.Now - timeSpan;
         isRunning = true;
         OnStart?.Invoke("Stopwatch started");
+        Tick();
       }
     }
     public void Stop()
@@ -44,6 +45,14 @@ namespace StopWatch
       timeSpan = TimeSpan.Zero;
       OnReset?.Invoke("Stopwatch reset");
     }
-    private void Tick() { }
+    private void Tick()
+    {
+      while (isRunning)
+      {
+        timeSpan = DateTime.Now - startTime;
+        Console.Write($"\rElapsed Time: {timeSpan:hh\\:mm\\:ss}");
+        Thread.Sleep(100);
+      }
+    }
   }
 }
